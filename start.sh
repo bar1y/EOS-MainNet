@@ -8,8 +8,8 @@
 #
 ###############################################################################
 
-DATADIR="/opt/EOSmainNet"
-NODEOSBINDIR="/home/eos-sources/eos/build/programs"
+DATADIR="/data/EOSmainNet"
+NODEOSBINDIR="/data/eos-sources/eos/build/programs"
 
 
 $DATADIR/stop.sh

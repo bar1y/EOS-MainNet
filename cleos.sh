@@ -8,7 +8,7 @@
 #
 ###############################################################################
 
-NODEOSBINDIR="/home/eos-sources/eos/build/programs"
+NODEOSBINDIR="/data/eos-sources/eos/build/programs"
 
 NODEHOST="127.0.0.1"
 NODEPORT="8888"
