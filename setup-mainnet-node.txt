@@ -1,0 +1,93 @@
+﻿# vim:ts=2:et:sw=2
+
+  准备:
+  
+    1. 一个 Ubuntu 系统.
+    2. 内存最小 16GB, 推荐 32GB.
+    3. 一个大的硬盘分区, 推荐1TB.
+       挂接到 /data 目录上(这个路径不要改, 在后面的脚本中是写死的).
+
+  具体步骤:
+
+    1. 编译 eosio(比较花时间):
+
+        mkdir /data/eos-sources  # 这个路径不要改, 因为在后面出现的一些脚本中是写死的
+        cd /data/eos-sources
+
+        git clone https://github.com/EOS-Mainnet/eos.git --recursive
+        cd eos
+
+        git checkout mainnet-1.4.2
+        git submodule update --init --recursive
+
+        ./eosio_build.sh -s "EOS" # 中途可能会问你是否要安装所需的软件包, 选择"1"表示Yes即可
+
+    2. 配置EOS主网节点:
+
+        mkdir /data/EOSmainNet  # 这个路径不要改, 因为在后面出现的一些脚本中是写死的
+        cd /data/EOSmainNet
+        git clone https://github.com/bar1y/EOS-MainNet .
+
+    3. 运行脚本
+         ./gen-config.sh
+       生成 config.ini 配置文件.
+       这个脚本会从
+         https://eosnodes.privex.io/?config=1
+       下载一个p2p节点的地址列表.
+       由于 https://eosnodes.privex.io/?config=1 可能无法访问, 所以你需要
+       在 config.ini 生成后检查一下其内容.
+	   
+    4. 修改 config.ini, 在下面这行里填上自己的IP地址:
+       (注: 如果这台机器没有公网IP的话就不用管这步, 直接跳过.)
+
+        server address: p2p-server-address = YOUR_NODE_IP_ADDRESS:9876
+
+    5. 同步区块数据:
+
+         从 https://eosnode.tools/blocks 上下载预先打包好的区块数据包, 比如:
+
+           blocks_2018-11-10-07-00.tar.gz  (55GB)
+
+         注: 用脚本 download-blocks.sh 可以自动下载 https://eosnode.tools/blocks 上
+             最新的区块数据包.
+             这个脚本需要用到 jq, 所以需要先用命令
+               sudo apt install jq
+             安装 jq.
+
+       解压后得到一个目录和一个文件:
+
+           blocks/blocks.log
+
+       把这个 blocks 目录放到 /data/EOSmainNet 下.
+
+       运行命令:
+
+         rm -rf state
+         ./start.sh --hard-replay-blockchain
+
+       清除 state 并开始 replay, 这个过程我目前实测要3-4天.
+
+
+  平时正常运行:
+
+    1. 运行:
+
+        ./start.sh
+
+    2. 停止:
+
+        ./stop.sh
+
+  HTTP服务端口:
+
+    在这个 config.ini 中, 这个端口是 8888.(当然你可以修改.)
+    访问一下 URL:
+      http://IP_ADDRESS:8888/v1/chain/get_info  
+    看看能否获取到相关信息.
+	  
+  参考链接:
+
+    https://www.eosdocs.io/resources/apiendpoints/#run-your-own-endpoint
+    https://github.com/CryptoLions/EOS-MainNet
+
+
