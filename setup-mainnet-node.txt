@@ -14,10 +14,10 @@
         mkdir /data/eos-sources  # 这个路径不要改, 因为在后面出现的一些脚本中是写死的
         cd /data/eos-sources
 
-        git clone https://github.com/EOS-Mainnet/eos.git --recursive
+        git clone https://github.com/EOSIO/eos --recursive
         cd eos
 
-        git checkout mainnet-1.4.2
+        git checkout v1.7.0
         git submodule update --init --recursive
 
         ./eosio_build.sh -s "EOS" # 中途可能会问你是否要安装所需的软件包, 选择"1"表示Yes即可
